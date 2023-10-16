@@ -1,0 +1,105 @@
+	.data
+Nhap:	.asciiz"Nhap ki tu: \n"
+XuatT:	"\nKi tu dung truoc "
+XuatS:	"\nKi tu dung sau "
+KTT:	"\nKhong ton tai ki tu. "
+So:	"\nSo"
+Thuong:	"\nChu thuong"
+Hoa:	"\nChu hoa"
+nt:	"\nInvalid type"
+La:	.asciiz" la: "
+
+	.text
+main:	la	$a0,Nhap
+	jal	cout
+	li	$v0,12
+	syscall
+	add	$s0,$v0,$zero
+	addi	$t0,$zero,97	
+	bne	$s0,$t0,Truoc1
+	jal	nope
+	j	Sau
+Truoc1:	addi	$t0,$zero,48	
+	bne	$s0,$t0,Truoc2
+	jal	nope
+	j	Sau
+Truoc2:	addi	$t0,$zero,65	
+	bne	$s0,$t0,Truoc
+	jal	nope
+	j	Sau
+	
+Truoc:	la	$a0,XuatT
+	jal	cout
+	
+	add	$a0,$s0,$zero
+	li	$v0,11
+	syscall
+	
+	la	$a0,La
+	jal	cout
+	addi	$a0,$s0,-1
+	li	$v0,11
+	syscall
+	addi	$t0,$zero,122	
+	bne	$s0,$t0,Sau1
+	jal	nope
+	j	next
+Sau1:	addi	$t0,$zero,90	
+	bne	$s0,$t0,Sau2
+	jal	nope
+	j	next
+Sau2:	addi	$t0,$zero,57	
+	bne	$s0,$t0,Sau
+	jal	nope
+	j	next
+	
+Sau:	la	$a0,XuatS
+	jal	cout
+	
+	addi	$a0,$s0,0
+	li	$v0,11
+	syscall
+	la	$a0,La
+	jal	cout
+	addi	$a0,$s0,1
+	li	$v0,11
+	syscall
+
+next:	
+so:	addi	$t0,$zero,48
+	blt	$s0,$t0,type
+	addi	$t0,$zero,57
+	bgt	$s0,$t0,hoa
+	la	$a0,So
+	jal	cout
+	j	exit
+
+hoa:	addi	$t0,$zero,65
+	blt	$s0,$t0,type
+	addi	$t0,$zero,90
+	bgt	$s0,$t0,thuong
+	la	$a0,Hoa
+	jal	cout
+	j	exit
+
+thuong:	addi	$t0,$zero,97
+	blt	$s0,$t0,type
+	addi	$t0,$zero,122
+	bgt	$s0,$t0,type
+	la	$a0,Thuong
+	jal	cout
+	j	exit
+	
+type:	la	$a0,nt
+	li	$v0,4
+	syscall
+exit:	li	$v0,10
+	syscall
+	
+cout:	li	$v0,4
+	syscall
+	jr	$ra
+nope:	la	$a0,KTT
+	li	$v0,4
+	syscall
+	jr	$ra
